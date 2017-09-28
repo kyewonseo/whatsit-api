@@ -275,6 +275,66 @@ router.get('/:projectId/trainset', function (req, res) {
   })
 })
 
+router.post('/:projectId/labels', function(req, res){
+
+  var projectId = req.params.projectId;
+  console.log('projectId =>' + projectId);
+
+  if (projectId == null ||
+    projectId == undefined) {
+
+    var awResponse = new AwResponse();
+    awResponse.code = 400;
+    awResponse.message = "projectId is invalid";
+    res.json(awResponse.create())
+  }
+
+  db.connectDB()
+    .then( () => wiProject.insertLabels(projectId, req.body))
+    .then( (project) => {
+      var awResponse = new AwResponse();
+      awResponse.code = 200;
+      awResponse.data = project;
+      res.json(awResponse.create())
+    }).catch( function (error) {
+    console.error(error)
+    var awResponse = new AwResponse();
+    awResponse.code = 500;
+    awResponse.message = error;
+    res.json(awResponse.create())
+  })
+});
+
+router.get('/:projectId/labels', function (req, res) {
+  var projectId = req.params.projectId;
+  console.log('projectId =>' + projectId);
+
+  if (projectId == null ||
+    projectId == undefined) {
+
+    var awResponse = new AwResponse();
+    awResponse.code = 400;
+    awResponse.message = "projectId is invalid";
+    res.json(awResponse.create())
+  }
+
+  db.connectDB()
+    .then( () => wiProject.getProjectByProjectId(projectId))
+    .then( (project) => wiProject.getLabelsByLabelMapId(project.label_map))
+    .then( (labels) => {
+      var awResponse = new AwResponse();
+      awResponse.code = 200;
+      awResponse.data = labels;
+      res.json(awResponse.create())
+    }).catch( function (error) {
+    console.error(error)
+    var awResponse = new AwResponse();
+    awResponse.code = 500;
+    awResponse.message = error;
+    res.json(awResponse.create())
+  })
+})
+
 
 function deleteInstancesByProjectId (projectId) {
   return new Promise((resolve, reject) => {
