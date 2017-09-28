@@ -7,7 +7,7 @@ var datasetSchema = new Schema({
   desc: String,
   thumbnail: String, //Thumbnail image url
   status: String, //Preparing, Live, Stop
-  type: String, //g-spreadsheet, video
+  type: String, //g-spreadsheet, video, bigquery
   // member: [ObjectId], //[User]
   data: [ObjectId] // image, video //or dicom
 });

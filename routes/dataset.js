@@ -86,9 +86,9 @@ router.post('/', function (req, res) {
   db.connectDB()
     .then( () => wiDataset.addDataset(req.body))
     .then( (result) => {
+      console.log('publish :whatsit/index/' + req.body.type);
       let awPubSub = new AwPubSub()
-      console.log('publish :whatsit/index/video');
-      awPubSub.nrp.emit('whatsit/index/video', JSON.stringify(result.datasetId));
+      awPubSub.nrp.emit('whatsit/index/' + req.body.type, result.datasetId);
 
       var awResponse = new AwResponse();
       awResponse.code = 200;
