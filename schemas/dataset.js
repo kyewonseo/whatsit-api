@@ -9,7 +9,7 @@ var datasetSchema = new Schema({
   status: String, //Preparing, Live, Stop
   type: String, //g-spreadsheet, video, bigquery
   // member: [ObjectId], //[User]
-  data: [ObjectId] // image, video //or dicom
+  data: [ObjectId] //ObjectID of g-spreadsheet, video, bigquery
 });
 
 module.exports = datasetSchema;

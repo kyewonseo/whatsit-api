@@ -131,4 +131,73 @@ router.put('/:datasetId', function (req, res) {
   })
 })
 
+router.put('/:datasetId/contents', function (req, res) {
+  var datasetId = req.params.datasetId;
+
+  if (datasetId == null ||
+    datasetId == undefined) {
+
+    var awResponse = new AwResponse();
+    awResponse.code = 400;
+    awResponse.message = "datasetId is invalid";
+    res.json(awResponse.create())
+  }
+
+  if (req.body.data[0].images.length === 0) {
+
+    var awResponse = new AwResponse();
+    awResponse.code = 400;
+    awResponse.message = "image length is zero";
+    res.json(awResponse.create())
+  }
+
+  db.connectDB()
+    .then( () => wiDataset.updateDatasetContents(req.body))
+    .then( (result) => {
+      var awResponse = new AwResponse();
+      awResponse.code = 200;
+      awResponse.data = result;
+      res.json(awResponse.create())
+    }).catch( function (error) {
+    console.error(error)
+    var awResponse = new AwResponse();
+    awResponse.code = 500;
+    awResponse.message = error;
+    res.json(awResponse.create())
+  })
+})
+
+router.get('/:datasetId/contents', function(req, res) {
+  var datasetId = req.params.datasetId;
+  var count = req.query.count;
+  
+  console.log('datasetId =>' + datasetId);
+  console.log('count =>' + count);
+
+  if (datasetId == null ||
+    datasetId == undefined) {
+
+    var awResponse = new AwResponse();
+    awResponse.code = 400;
+    awResponse.message = "datasetId is invalid";
+    res.json(awResponse.create())
+  } else {
+    db.connectDB()
+      .then( () => wiDataset.getDatasetContentsByDatasetId(datasetId, count))
+      .then( (dataset) => {
+
+        var awResponse = new AwResponse();
+        awResponse.code = 200;
+        awResponse.data = dataset;
+        res.json(awResponse.create())
+
+      }).catch( function (error) {
+      console.error(error)
+      var awResponse = new AwResponse();
+      awResponse.code = 500;
+      awResponse.message = error;
+      res.json(awResponse.create())
+    })
+  }
+});
 module.exports = router;
